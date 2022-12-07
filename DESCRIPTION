@@ -1,0 +1,12 @@
+Package: AsyncCluster
+Type: Package
+Title: Clustering Asynchronous Time Series using Statistical Distances
+Version: 0.1.0
+Author: Who wrote it
+Maintainer: Jason B. Cho <bc454@cornell.edu>
+Description: The package performs distance based clustering algorithm, k-medoid to be specific, on a set of sparsely sampled, asynchronous time series, in which only a handful of samples are present on a time span at an irregular interval. The two main differences with the traditional method is 1) use of Gaussian Process regression for interpolation and 2) use of the statistical distance, as opposed to L1 or L2 distance, as a similarity metric.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: dtwclust,reshape,ggplot2,foreach,GauPro,kmed,tseries,stats
+RoxygenNote: 7.2.2
