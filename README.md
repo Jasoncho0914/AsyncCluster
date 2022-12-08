@@ -2,7 +2,8 @@
 
 You may download the package by using the following command.
 
-    devtools::install_github("JasonCho0914/AsyncCluster")
+    devtools::install_github("JasonCho0914/AsyncCluster", 
+                              build_vignettes = TRUE)
 
 The following packages were used for the analysis.
 
