@@ -7,6 +7,7 @@
 #' @param mu2 mean of the second normal distribution
 #' @param se2 standard error of the second normal distribution
 #' @details The squared Hellinger distance between two normal distributions, \eqn{X \sim N(\mu_x,\sigma_x^2)} and \eqn{Y \sim N(\mu_y,\sigma_y^2)} \deqn{H^2(X,Y) = 1-\sqrt{\frac{2\sigma_x\sigma_y}{\sigma_x^2+\sigma_2^2}}e^{\frac{-(\mu_x -\mu_y)^2}{4*(\sigma_x^2 + \sigma_y^2)}}}
+#' @export
 hellinger <- function(mu1,se1,mu2,se2){
   se1[se1==0] = 1.0e-09
   se2[se2==0] = 1.0e-09
@@ -24,6 +25,7 @@ hellinger <- function(mu1,se1,mu2,se2){
 #' @param se2 standard error of the second normal distribution
 #' @details Given \eqn{X \sim N(\mu_x,\sigma_x^2)} and \eqn{Y \sim N(\mu_y,\sigma_y^2)},
 #' I calculate \deqn{(\frac{(\mu_x - \mu_y)}{(\sigma_x^2 +\sigma_y^2)})^2}
+#' @export
 z2_score <- function(mu1,se1,mu2,se2){
   se1[se1==0] = 1.0e-09
   se2[se2==0] = 1.0e-09
@@ -39,12 +41,12 @@ z2_score <- function(mu1,se1,mu2,se2){
 #' @param k number of clusters
 #' @param DTW whether to apply dynamic time-warping or not
 #' @details when DTW is not applied `kmeans` function from the stat package is used. when DTW is applied, `dtwclust` function from tsclust package is used.
+#' @export
 kmeans_ts <- function(df_timeseries,k,DTW = F){
-  combined_tf <- do.call("cbind",df_timeseries)
   if(DTW == F){
-    predicted_cluster <- stats::kmeans(t(combined_tf),k)$cluster
+    predicted_cluster <- stats::kmeans(t(df_timeseries),k)$cluster
   }else{
-    predicted_cluster <- dtwclust::tsclust(t(combined_tf),k = 2,centroid = "mean")@cluster
+    predicted_cluster <- dtwclust::tsclust(t(df_timeseries),k = 2,centroid = "mean")@cluster
   }
   return(predicted_cluster)
 }
@@ -57,6 +59,7 @@ kmeans_ts <- function(df_timeseries,k,DTW = F){
 #' @param M_se a data.frame of standard errors representing the level of confidence for each interpolated data points on M_pred. use if standard error is calculated for M_pred.
 #' @param DTW whether to apply dynamic time-warping or not
 #' @param type either "l1" vs "hellinger", l1 distance or hellinger distance is applied
+#' @export
 compute_dm <- function(M_pred,M_se=NULL,DTW = F,type = "l1"){
   if (DTW == T){
     if (type == "l1"){
@@ -81,6 +84,7 @@ compute_dm <- function(M_pred,M_se=NULL,DTW = F,type = "l1"){
 #' @param dm is a matrix or distance matrix object
 #' @param k number of clusters
 #' @details this function uses `fastkmed` from kmed package.
+#' @export
 k_medoid <- function(dm,k){
   return(kmed::fastkmed(dm,k)$cluster)
 }
@@ -122,11 +126,6 @@ DTW_vec <- function(predA, seA = NULL, predB, seB = NULL,type = "l1"){
 
 
 DTW_matrix <- function(M_pred,M_se=NULL,type = "l1"){
-  M_pred <- do.call("cbind",M_pred)
-
-  if(type != "l1"){
-    M_se <- do.call("cbind",M_se)
-  }
   n = ncol(M_pred)
   distances <- matrix(rep(0,n*n),nrow = n)
   for (i in 1:n){
@@ -146,26 +145,21 @@ DTW_matrix <- function(M_pred,M_se=NULL,type = "l1"){
 }
 
 #euclidean matching
-eucl_matrix <- function(df_timeseries,df_se=NULL,type="l1"){
-  combined_pred <- do.call("cbind",df_timeseries)
-
-  if(!is.null(df_se)){
-    combined_se <-  do.call("cbind",df_se)
-  }
+eucl_matrix <- function(M_pred,M_se=NULL,type="l1"){
   if(type =="l1"){
-    distances = stats::dist(t(combined_pred),method = "manhattan")
+    distances = stats::dist(t(M_pred),method = "manhattan")
   }
   else{
-    n = ncol(combined_pred)
+    n = ncol(M_pred)
     distances <- matrix(rep(0,n*n),nrow = n)
     for (i in 1:n){
       for (j in i:n){
         if(type == "hellinger"){
-          d = sum(hellinger(combined_pred[,i],combined_se[,i],
-                            combined_pred[,j],combined_se[,j]))
+          d = sum(hellinger(M_pred[,i],M_se[,i],
+                            M_pred[,j],M_se[,j]))
         }else if(type == "z2"){
-          d = sum(z2_score(combined_pred[,i],combined_se[,i],
-                            combined_pred[,j],combined_se[,j]))
+          d = sum(z2_score(M_pred[,i],M_se[,i],
+                           M_pred[,j],M_se[,j]))
         }
         distances[i,j] = d
         if (i != j){

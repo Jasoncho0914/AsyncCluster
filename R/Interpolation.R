@@ -5,6 +5,7 @@
 #' @param dataframe a data.frame with each column representing time-series with missing value as NA. The first and the last item must exist.
 #' @param n_intervals the number of intervals to be interpolated. This is used to rescale your time series on a regular interval.
 #' @details `approx` function from the stats package was used to linearly inteproalte data points.
+#' @export
 linear_interpolation <- function(dataframe,n_intervals){
   ret <- list()
   last_idx <- length(dataframe[,1])# length of the time series
@@ -26,6 +27,7 @@ linear_interpolation <- function(dataframe,n_intervals){
 #' @param dataframe a data.frame with each column representing time-series with missing value as NA.
 #' @param n_intervals the number of intervals to be interpolated. This is used to rescale your time series on a regular interval.
 #' @details `GauPro_kernel_model` and `Matern52` function from the GauPro package was used to inteproalte data points.
+#' @export
 gp_interpolation <- function(dataframe,n_intervals){
   ret <- list()
   last_idx <- length(dataframe[,1])# last index
