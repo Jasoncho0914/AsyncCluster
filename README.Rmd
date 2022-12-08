@@ -21,6 +21,13 @@ You may download the package by using the following command.
 devtools::install_github("JasonCho0914/AsyncCluster")
 ```
 
+If you also want to see this vignette on your machine, (this will take some time)
+```{r setup2, eval = FALSE}
+devtools::install_github("JasonCho0914/AsyncCluster",
+                         build_vignettes = TRUE)
+```
+
+
 The following packages were used for the analysis. 
 ```{r other packages, message=FALSE, warning = FALSE}
 # install.packages(c("quantmod","foreach","ggplot2))
