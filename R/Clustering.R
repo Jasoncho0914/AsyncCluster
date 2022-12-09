@@ -96,6 +96,7 @@ k_medoid <- function(dm,k){
 #' @param dm is a matrix or distance matrix object
 #' @param k number of clusters
 #' @details this function uses `hclust` and `cutree` from kmed package. The complete linkage is used.
+#' @export
 agglomerative <- function(dm,k){
   hc1 <- stats::hclust(dm, method = "complete" )
   return(stats::cutree(hc1,k))
